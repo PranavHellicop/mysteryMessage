@@ -2,10 +2,11 @@ import { auth } from "@/auth";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 
-export async function DELETE(request,params){
+export async function DELETE(req,{params}){
     await dbConnect()
     const session = await auth()
     const user = session?.user
+console.log(user);
 
     if (!session || !user) {
         return Response.json(
@@ -18,13 +19,16 @@ export async function DELETE(request,params){
             }
         )
     }
-
+    console.log("params",params);
+    
     const messageId = params.messageid
+    console.log(messageId);
+    
 
 
     const upatedUser = await UserModel.updateOne(
-        {id:user._id},
-        {$pull:{messages:messageId}}
+        {_id:user._id},
+        {$pull:{messages: {_id:messageId}}}
     )
 
     if(upatedUser.modifiedCount===0){
@@ -40,7 +44,7 @@ export async function DELETE(request,params){
     }
     return Response.json(
         {
-            success: success,
+            success: true,
             message: "Message deleted"
         },
         {

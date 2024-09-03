@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server'
 import { auth } from './auth';
 
+// import NextAuth from "next-auth"
+// import authConfig from "./auth.config"
+ 
+// export const { auth: middleware } = NextAuth(authConfig)
 // This function can be marked `async` if using `await` inside
 export default auth((req)=>{
     const isLoggedIn =  !!req.auth
-    // console.log(isLoggedIn);
+    console.log("isloggedin----------------------------->",isLoggedIn);
     const url = req.nextUrl
     // console.log(url);
     

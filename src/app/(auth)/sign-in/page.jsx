@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Loader2 } from 'lucide-react'
-import { credentialLogin } from '@/app/action/actions'
+import { signIn } from 'next-auth/react'
 
 const Page = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -21,7 +21,7 @@ const Page = () => {
   const form = useForm({
     resolver:zodResolver(signInSchema),
     defaultValues:{
-      username:"",
+      identifier:"",
       password:""
     }
   })
@@ -30,32 +30,34 @@ const Page = () => {
     setIsSubmitting(true)
 
     // console.log(data);
-    const formData = new FormData()
-    formData.append("identifier",data.identifier)
-    formData.append("password",data.password)
+    // const formData = new FormData()
+    // formData.append("identifier",data.identifier)
+    // formData.append("password",data.password)
    
-    const result = await credentialLogin(formData)
-    console.log("result----------->",result);
+    // const result = await credentialLogin(formData)
     
-    if(!result){
+    const result = await signIn("credentials", {
+      identifier: data.identifier,
+      password: data.password,
+      redirect: false
+    })
     
+  
+    if (result?.error) {
       toast({
-        title: "login failed",
-        description:"Couldn't log you in",
-        variant:"destructive"
-      })
-      setIsSubmitting(false)
+        title: "Error",
+        description: result.error,
+        variant: "destructive",
+      });
     }
 
-      toast({
-        title: "signed in",
-        description:"Successfully signed in",
+    if (result?.url) {
+      router.replace("/dashboard");
+    }
+    setIsSubmitting(false);
+  };
       
-      })
-      router.push("/dashboard")
-      setIsSubmitting(false)
-      
-  }
+  
 
   return (
     <div className="min-h-screen w-full flex justify-center items-center">
@@ -75,6 +77,7 @@ const Page = () => {
                   <FormControl>
                     <Input
                       placeholder="Enter Username or Email"
+                      className="text-black"
                       {...field}
                     />
                   </FormControl>
@@ -93,6 +96,7 @@ const Page = () => {
                     <Input
                       type="password"
                       placeholder="Enter Password"
+                      className="text-black"
                       {...field}
                     />
                   </FormControl>

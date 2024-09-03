@@ -3,8 +3,7 @@ import AuthProvider from "@/context/AuthProvider";
 import { Toaster } from "@/components/ui/toaster"
 import Navbar from "@/components/Navbar";
 import "./globals.css"
-// import { auth } from "@/auth";
-// import { SessionProvider } from "next-auth/react";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,10 +13,10 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  // const session = auth()
+
   return (
     <html lang="en">
-        <body className={inter.className}>
+        <body className={` ${inter.className} bg-neutral-950 text-white`}>
       <AuthProvider>
           <Navbar />
           {children}

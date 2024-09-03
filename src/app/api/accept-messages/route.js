@@ -23,7 +23,9 @@ export async function POST(request) {
     }
 
     const userId = user._id
-    const acceptMessages = await request.json()
+    const {acceptMessages} = await request.json()
+    
+    
 
     try {
         const updatedUser = await UserModel.findByIdAndUpdate(
@@ -71,13 +73,9 @@ export async function POST(request) {
     }
 }
 
-export async function GET(request) {
+export async function GET() {
     await dbConnect()
-
-
-    const session = auth()
-
-    const user = session?.user
+    const session = await auth()
 
     if (!session || !session?.user) {
         return Response.json(
@@ -90,11 +88,14 @@ export async function GET(request) {
             }
         )
     }
+    
+    const user = session?.user
 
-    const userId = user._id
-
+    
+    
     try {
-
+        
+        const userId = user?._id
         const foundUser = await UserModel.findById(userId)
 
         if(!foundUser){

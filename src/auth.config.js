@@ -1,16 +1,10 @@
-import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import dbConnect from "@/lib/dbConnect"
 import UserModel from "@/model/User"
 import bcrypt from "bcryptjs"
-// import authConfig from "./auth.config"
-
-// class WrongPassword extends CredentialsSignin {
-//     code = "Wrong_Password";
-//   }
-
-
-export const { handlers, signIn, signOut, auth } = NextAuth({
+ 
+// Notice this is only an object, not a full Auth.js instance
+export default {
     providers: [
         Credentials({
             id: "credentials",
@@ -57,36 +51,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
         })
     ],
-    callbacks: {
-        async jwt({ token, user }) {
-            if (user) {
-                token._id = user.id?.toString()
-                token.isVerified = user.isVerified
-                token.isAcceptingMessages = user.isAcceptingMessages
-                token.username = user.username
-            }
-
-            return token
-        },
-        async session({ session, token }) {
-            if (token) {
-                session.user._id = token._id
-                session.user.isVerified = token.isVerified
-                session.user.isAcceptingMessages = token.isAcceptingMessages
-                session.user.username = token.username
-            }
-            return session
-        }
-    },
-
-    pages: {
-        signIn: '/sign-in'
-    },
-    session: {
-        strategy: "jwt"
-
-    },
-    
-    secret:process.env.AUTH_SECRET,
-  
-})
+} 

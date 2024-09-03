@@ -16,11 +16,11 @@ export async function GET(request){
             username: searchParams.get("username")
         }
         const result  = UsernameQuerySchema.safeParse(queryparam)
-        console.log("check-unique-username-----> result--->",result);
+        
 
         if(!result.success){
             const usernameErrors = result.error.format().username?._errors || []
-            console.log("usernmeerrors",usernameErrors);
+     
             
             return Response.json({
                 success:false,

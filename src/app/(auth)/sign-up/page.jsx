@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useDebounceCallback } from 'usehooks-ts'
-import axios, { AxiosError } from "axios"
+import axios from "axios"
 import * as  z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -43,7 +43,7 @@ export default function Page() {
         setUsernameAvailableMessage("")
         try {
           const response = await axios.get(`/api/check-username-unique?username=${username}`)
-          console.log("app-->(auth)--->sign-up---->page.jsx", response)
+        
           setUsernameAvailableMessage(response.data.message)
 
         } catch (error) {
@@ -72,7 +72,7 @@ export default function Page() {
             return status<502
         }}
       )
-      console.log("response",response);
+
       
       if (response.data?.success) {
         toast({
@@ -90,7 +90,7 @@ export default function Page() {
 
 
     } catch (error) {
-      console.log("app-->(auth)--->sign-in---->page.jsx", error)
+
       toast({
         title: "Sign-up Failed",
         description: error.message,
@@ -118,6 +118,7 @@ export default function Page() {
                   <FormLabel>Username</FormLabel>
                   <FormControl>
                     <Input
+                      className="text-black"
                       placeholder="Enter Username"
                       {...field}
                       onChange={(e) => {
@@ -142,6 +143,7 @@ export default function Page() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
+                    className="text-black"
                       placeholder="Enter Email"
                       {...field}
                     />
@@ -158,6 +160,7 @@ export default function Page() {
                   <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input
+                    className="text-black"
                       type="password"
                       placeholder="Enter Password"
                       {...field}

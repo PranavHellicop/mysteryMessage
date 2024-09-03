@@ -1,11 +1,20 @@
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import { auth } from "@/auth";
+import mongoose from "mongoose";
 
 export async function GET(request){
     await dbConnect()
+    // console.log("request",request);
+    
+    const searchParams = new URL(request.url).searchParams
+    
+    const PER_PAGE = searchParams.get("per_page") ?? 5
+    const PAGE = searchParams.get("page") ?? 1
 
+    console.log("PAGE",PAGE);
 
+    
     const session = await auth()
 
     const user = session?.user
@@ -22,19 +31,28 @@ export async function GET(request){
         )
     }
 
-    const userId = new mongoose.Types.ObjectId(user._id)
+    const userId = new mongoose.Types.ObjectId(`${user._id}`)
 
+    
     try {
 
         // Aggregation Pipeline
         const user = await UserModel.aggregate([
-            {$match : { id : userId}},
+            {$match : { _id : userId}},
             {$unwind: '$messages'},
             {$sort: {'messages.createdAt:':-1}},
-            {$group: {_id: "$_id", messages:{$push:'$messages'}}}
+            {$skip:parseInt(PER_PAGE)*(parseInt(PAGE)-1)},
+            {$limit:parseInt(PER_PAGE)},
+            {$group: {_id: "$_id", messages:{$push:'$messages'}}},
         ])
+        console.log(user);
+        
         // TODO:Console
-        if(!user || user.length===0){
+      
+
+       
+        
+        if(!user){
             return Response.json(
                 {
                     success: false,
@@ -45,6 +63,18 @@ export async function GET(request){
                 }
             )
         }
+        if(user.length===0){
+            return Response.json(
+                {
+                    success: false,
+                    message: "No Messages Found"
+                },
+                {
+                    status: 401
+                }
+            )
+        }
+
         return Response.json(
             {
                 success: true,

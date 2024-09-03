@@ -54,7 +54,7 @@ const Page = () => {
 
         } catch (error) {
 
-            console.log("app-->(auth)--->sign-in---->page.jsx", error)
+          
             toast({
                 title: "Verification Failed",
                 description: error.message,
